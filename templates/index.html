@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="/static/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <style>
+    /* CSS không thay đổi */
+    body {
+      font-family: Garamond;
+    }
+
+    h1 {
+      color: black;
+      margin-bottom: 0;
+      margin-top: 0;
+      text-align: center;
+      font-size: 40px;
+    }
+
+    h3 {
+      color: black;
+      font-size: 20px;
+      margin-top: 3px;
+      text-align: center;
+    }
+
+    #chat-container {
+      margin-left: auto;
+      margin-right: auto;
+      width: 80%; /* Độ rộng của khung chat */
+      margin-top: 60px;
+      background-color: #f0f0f0; /* Màu nền khung chat */
+      border-radius: 5px;
+      padding: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    #chatbox {
+      height: 300px; /* Độ cao của khung chat */
+      overflow-y: auto; /* Cuộn thanh trượt khi nội dung dài hơn khung chat */
+    }
+
+    #userInput {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #textInput {
+      width: 80%;
+      border: none;
+      border-bottom: 3px solid #009688;
+      font-family: "Times New Roman", Times, serif; /* Đổi phông chữ thành Times New Roman */
+      font-size: 17px;
+    }
+
+    #buttonInput {
+      width: 15%;
+      padding: 5px;
+      font-family: "Times New Roman", Times, serif; /* Đổi phông chữ thành Times New Roman */
+      font-size: 17px;
+    }
+
+    .message {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      clear: both;
+    }
+
+    .user-message {
+      background-color: #009688; /* Màu nền của tin nhắn người dùng */
+      color: white; /* Màu chữ của tin nhắn người dùng */
+      float: right;
+      font-family: "Times New Roman", Times, serif; /* Đổi phông chữ thành Times New Roman */
+    }
+
+    .bot-message {
+      background-color: #a1a2a2; /* Màu nền của tin nhắn chatbot */
+      float: left;
+      font-family: "Times New Roman", Times, serif; /* Đổi phông chữ thành Times New Roman */
+    }
+  </style>
+</head>
+<body>
+  <h1>HappyTour xin kính chào quý khách!</h1>
+  <div id="chat-container">
+    <h3>Chat với HappyTour</h3>
+    <div id="chatbox">
+      <!-- Tin nhắn mẫu của chatbot -->
+      <div class="message bot-message">
+        Hi bạn! HappyTour có thể giúp gì cho bạn?
+      </div>
+    </div>
+    <div id="userInput">
+      <input id="textInput" type="text" name="msg" placeholder="Nhập tin nhắn...">
+      <input id="buttonInput" type="submit" value="Gửi">
+    </div>
+  </div>
+  <script>
+    function addMessage(messageText, messageClass) {
+      var chatbox = document.getElementById("chatbox");
+      var messageDiv = document.createElement("div");
+      messageDiv.className = "message " + messageClass;
+      messageDiv.innerText = messageText;
+      chatbox.appendChild(messageDiv);
+      chatbox.scrollTop = chatbox.scrollHeight; // Cuộn đến dưới cùng của khung chat
+    }
+
+    function getBotResponse() {
+      var rawText = $("#textInput").val();
+      addMessage(rawText, "user-message");
+      $("#textInput").val("");
+      $.get("/get", { msg: rawText }).done(function (data) {
+        addMessage(data, "bot-message");
+      });
+    }
+
+    $("#textInput").keypress(function (e) {
+      if (e.which == 13) {
+        getBotResponse();
+      }
+    });
+
+    $("#buttonInput").click(function () {
+      getBotResponse();
+    });
+  </script>
+</body>
+</html>
